@@ -13,7 +13,8 @@ import regex
 def get_text():
     return '''
     - Что ты говоришь? Рим - столица Италии. Человек-пароход. Звоните: 228-36-956 -6 Петя-1 2018 год 19   лет
-    Falcon-9 совершил свой первый полёт.
+    Falcon-9 совершил свой первый полёт.\n2020 год
+    2019 год.
     
     \n
     end
@@ -52,7 +53,7 @@ def substitute_hyphens_for_dashes(string):
 
 def substitute_hyphens_for_short_dashes(string):
     short_dash_pattern = r'(?<=\d)-(?=\d)'
-    html_code_of_short_dash = '&#8211'
+    html_code_of_short_dash = '&#8210'
     fixed_short_dashes = re.sub(
         short_dash_pattern,
         html_code_of_short_dash,
@@ -61,23 +62,17 @@ def substitute_hyphens_for_short_dashes(string):
     return fixed_short_dashes
 
 
-def get_nonbreaking_space(match):
-    if match.group(1) == ' ':
-        str_without_end_space = match.group(0).rstrip()
+def get_nonbreaking_space(match_object):
+    if re.match(r'\s', match_object.group(1)):
+        str_without_end_space = match_object.group(0).rstrip()
         nonbreaking_space = '&#160'
         str_with_nonbreaking_space = str_without_end_space + nonbreaking_space
         return str_with_nonbreaking_space
-    return match.group(0)
+    return match_object.group(0)
 
 
 def add_nonbreaking_spaces(string):
-    # TODO No nonbreaking space should be between 'Петя-1' and '2018'
-    # search_pattern = r'(?<=[0-9])\s(?=\p{L})'
-    # html_code_of_nonbreaking_space = '&#160'
-    search_pattern = r'(\D)(\d+)(\s)(?=\p{L})'
-    # match_object = regex.search(search_pattern, string)
-    # get_nonbreaking_space(match_object)
-    # html_code_of_nonbreaking_space = '!'
+    search_pattern = r'(\D)(\d+\s)(?=\p{L})'
     text_with_nonbreaking_spaces = regex.sub(
         search_pattern,
         get_nonbreaking_space,
@@ -108,11 +103,12 @@ def delete_empty_lines(string):
 
 if __name__ == '__main__':
     text = get_text()
+    text = delete_redundant_spaces(text)
     text = add_nonbreaking_spaces(text)
     text = fix_left_quotes(text)
     text = fix_right_quotes(text)
     text = substitute_hyphens_for_dashes(text)
     text = substitute_hyphens_for_short_dashes(text)
-    text = delete_redundant_spaces(text)
-    # text = delete_empty_lines(text)
+
+    text = delete_empty_lines(text)
     print(text)
