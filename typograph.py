@@ -4,11 +4,12 @@ import regex
 def get_text():
     return '''
     <p>- Что ты говоришь?</p> Рим - столица Италии. Человек-пароход. Звоните: 228-36-956 -6 Петя-1 2018 год 19   лет
-    <b>Falcon-9</b> совершил свой первый полёт и он был успешен.\n2020 год
+    <b>Falcon-9 совершил свой первый полёт и он был успешен.\n2020 год
     2019 год.
     
     в 1989 году
     не очень-то круто
+    Ку ка ре ку
     '''
 
 
@@ -100,7 +101,7 @@ def get_nonbreaking_space_for_short_words(match_object):
 
 
 def bind_short_words_together(string):
-    short_words_pattern = r'\s\p{L}{1,2} '
+    short_words_pattern = r'(?<!-)\b\p{L}{1,2} (?=\p{L})'
     text_with_bound_short_words = regex.sub(
         short_words_pattern,
         get_nonbreaking_space_for_short_words,
