@@ -10,7 +10,6 @@ def form(edited_text=None):
     if request.method == 'POST':
         user_text = request.form['text']
         edited_text = launch_typograph(user_text)
-        print(edited_text)
     return render_template('form.html', edited_text=edited_text)
 
 
