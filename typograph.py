@@ -1,31 +1,29 @@
-import regex
+import re
 
 
 def launch_typograph(content):
     substitute_rules = [
-        # delete redundant spaces
-        ('  +', ' '),
-        # bind numbers with words
-        (r'((\s|\A)\d+)(\s)(?=\p{L})', r'\1&#160'),
-        # fix left quotes
-        (r'[\'|"](?=\w)', '&#171'),
-        # fix right quotes
-        (r'(?<=\w)[\'|"]', '&#187'),
-        # substitute hyphens for dashes
-        (r'(?<=\s)-(?=\s)', '&#8211'),
-        # replace_hyphens_in_phone_numbers
-        (r'(?<=\d)-(?=\d)', '&#8210'),
-        # delete empty lines
-        (r'\s\s+', '\n'),
-        # bind short words together
-        (r'(?<!-)(\b\p{L}{1,2})( )(?=\p{L})', r'\1&#160')
+        ('[  ]+ # delete redundant spaces', ' '),
+        (
+            r'((\s|\A)\d+)(\s)(?=[а-яА-Яa-zA-Z]) # bind numbers with words',
+            r'\1&#160'
+        ),
+        (r'[\'|"](?=\w) # fix left quotes', '&#171'),
+        (r'(?<=\w)[\'|"] # fix right quotes', '&#187'),
+        (r'(?<=\s)-(?=\s) # substitute hyphens for dashes', '&#8211'),
+        (r'(?<=\d)-(?=\d) # replace_hyphens_in_phone_numbers', '&#8210'),
+        (r'\s\s+ # delete empty lines', '\n'),
+        (
+            r'(?<!-)(\b\p{L}{1,2})( )(?=[а-яА-Яa-zA-Z]) # bind short words',
+            r'\1&#160'
+        )
     ]
     for pattern, substitute in substitute_rules:
-        content = regex.sub(pattern, substitute, content)
+        content = re.sub(pattern, substitute, content, flags=re.VERBOSE)
     return content
 
 
 if __name__ == '__main__':
-    text = 'Some text.'
-    edited_text = launch_typograph(text)
-    print(text)
+    text = 'Фалкон-9 - ракета. 234-567 телефон         тел.'
+    formatted_text = launch_typograph(text)
+    print(formatted_text)

@@ -28,6 +28,7 @@
 
     <div class="container">
       <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
           <textarea name="text" class="form-control" rows="10" placeholder="Введите текст" autofocus></textarea>
         </div>
@@ -38,8 +39,8 @@
 
         <div class="form-group">
           <textarea class="form-control" rows="10" placeholder="Здесь будет результат" disabled="disabled">
-            {% if edited_text %}
-              {{ edited_text }}
+            {% if formatted_text %}
+              {{ formatted_text }}
             {% endif %}
           </textarea>
         </div>
